@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+contract TokenizedVoting {
+    address public organizer;
+    mapping(address => uint256) public votes;
+    IERC20 public votingToken;
+
+    constructor(address _votingToken) {
+        organizer = msg.sender;
+        votingToken = IERC20(_votingToken);
+    }
+
+    function vote(uint256 proposalId, uint256 amount) external {
+        require(amount > 0, "Invalid vote amount");
+        votingToken.transferFrom(msg.sender, address(this), amount);
+        votes[proposalId] += amount;
+    }
+}
